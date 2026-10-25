@@ -7,26 +7,19 @@ description: Portfolio of Crisalex720, a full-stack developer. PHP, Java and dat
 ---
 
 <header class="nav">
-  <nav class="nav-left" aria-label="Sections">
-    <a class="reveal" href="#work">Work</a>
-    <a class="reveal" style="--d:60ms" href="#stack">Stack</a>
-    <a class="reveal" style="--d:120ms" href="#about">About</a>
-    <a class="reveal" style="--d:180ms" href="#contact">Contact</a>
-  </nav>
-
   <a class="nav-mark reveal" href="{{ '/' | relative_url }}">Crisalex720</a>
 
   <div class="nav-right">
     <a class="hide-mobile reveal" style="--d:240ms" href="{{ '/' | relative_url }}" hreflang="es" lang="es">Español</a>
     <details class="nav-menu">
-      <summary>Menu</summary>
-      <div class="nav-menu-panel">
+      <summary aria-label="Open navigation menu">Menu</summary>
+      <nav class="nav-menu-panel" aria-label="Sections">
         <a href="#work">Work</a>
         <a href="#stack">Stack</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
         <a href="{{ '/' | relative_url }}" hreflang="es" lang="es">Español</a>
-      </div>
+      </nav>
     </details>
   </div>
 </header>

@@ -37,8 +37,6 @@
   }
 
   /* ---- the marquee also pauses for a keyboard user ------------------- */
-  /* CSS pauses it on hover; focus inside the hero gives keyboard users the
-     same control over a line that moves for ever (WCAG pause/stop/hide). */
 
   var hero = document.querySelector(".hero");
   if (hero) {
@@ -47,14 +45,13 @@
   }
 
   /* ---- the marquee runs at a constant speed --------------------------- */
-  /* duration = track width (one full cycle) / px per second. 40px/s keeps
-     the line readable; CSS falls back to 42s before this runs. */
+  /* Keep the oversized name visibly moving without making it hard to read. */
 
   function setSpeed() {
     document.querySelectorAll(".mq-track").forEach(function (track) {
       var cycle = track.scrollWidth / 2; /* two identical halves */
       if (cycle > 0) {
-        track.style.animationDuration = (cycle / 40).toFixed(2) + "s";
+        track.style.animationDuration = (cycle / 100).toFixed(2) + "s";
       }
     });
   }
@@ -70,5 +67,12 @@
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(setSpeed, 200);
+  });
+
+  document.querySelectorAll(".nav-menu-panel a[href^='#']").forEach(function (link) {
+    link.addEventListener("click", function () {
+      var menu = link.closest(".nav-menu");
+      if (menu) menu.open = false;
+    });
   });
 })();
