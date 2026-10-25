@@ -1,0 +1,907 @@
+/* ==========================================================================
+   Crisalex720 — design tokens from the dealt direction sheet
+   direction: name-as-monument · seed 811457238
+   type: Panchang (display) / Switzer (text) · colour: Navy and pink
+   ========================================================================== */
+
+:root {
+  /* palette — one ground, one ink, one accent */
+  --bg: #1a2039;
+  color-scheme: dark;            /* dark scrollbar and form controls on a dark page */
+  --surface: #212846;
+  --surface-2: #272f52;      /* one step from --surface, for bar hover/panels */
+  --ink: #f9a3c0;
+  --muted: #c9a0b4;
+  --accent: #f9a3c0;
+  --accent-ink: #1a2039;
+
+  /* type steps — five is the ceiling */
+  --step-small: 15px;                           /* labels, captions, notes */
+  --step-body:  16px;                           /* running text */
+  --step-lead:  22px;                           /* leads, the closing statement's siblings */
+  --step-head:  40px;                           /* section headings, fact values */
+
+  /* frame — one pair of equal outer margins, used everywhere */
+  --margin: clamp(20px, 2.2vw, 32px);
+  --section-gap: clamp(120px, 14vw, 240px);
+  --radius: 0;              /* square corners, decided once */
+  --sq: 272px;              /* hero photograph, desktop */
+  --nav-h: 56px;            /* measured: 32px padding + one line of 16px/1.5 */
+  --font-display: "Panchang", "Arial Black", system-ui, sans-serif;
+  --font-text: "Switzer", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   Reset
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: var(--step-body);
+  line-height: 1.5;
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* no double-tap zoom delay on the links and the menu summary */
+a, button, summary, details {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(249, 163, 192, 0.24);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+p { margin: 0; text-wrap: pretty; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--margin);
+  top: -100px;
+  z-index: 99;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: var(--step-body);
+  text-decoration: none;
+}
+.skip-link:focus { top: 12px; }
+
+/* the language switch: visible on desktop, folded into the phone menu */
+@media (max-width: 860px) {
+  .hide-mobile { display: none; }
+
+  /* the closing sentence needs its full 12–18 words on three lines here;
+     at this width five columns are not enough measure */
+  .contact-sentence { grid-column: 1 / span 6; }
+}
+
+/* --------------------------------------------------------------------------
+   Type roles
+   -------------------------------------------------------------------------- */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  font-size: var(--step-head);
+}
+
+.statement {
+  font-size: clamp(24px, 2.6vw, 36px);   /* never larger than 36px on desktop */
+  line-height: 1.2;
+  max-width: 34ch;
+}
+
+.lead {
+  font-size: var(--step-lead);
+  line-height: 1.4;
+}
+
+.small { font-size: var(--step-small); line-height: 1.45; }
+.muted { color: var(--muted); }
+
+/* --------------------------------------------------------------------------
+   Buttons — flat, one fill, square. The primary action only.
+   -------------------------------------------------------------------------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 26px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-text);
+  font-size: var(--step-body);
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+.button:hover { filter: brightness(1.08); }
+.button:active { transform: translateY(2px); }
+
+/* --------------------------------------------------------------------------
+   Navigation — a plain bar: wordmark, a few links, one action
+   -------------------------------------------------------------------------- */
+
+.nav {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 32px var(--margin) 0;
+  font-size: var(--step-body);
+}
+
+.nav-left { display: flex; gap: 22px; justify-self: start; }
+.nav-right { display: flex; gap: 22px; justify-self: end; }
+
+.nav a {
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+.nav a:hover { color: #ffd0e0; }
+
+.nav-mark {
+  justify-self: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-body);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.nav-menu { display: none; }
+
+/* --------------------------------------------------------------------------
+   Hero — Square over a moving line
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  /* the hero sits *under* the nav, so a full 100svh here would push its bottom
+     row — the location line and the Contacto button — past the first screen.
+     One screen minus the nav keeps that row 40px above the fold. */
+  min-height: calc(100svh - var(--nav-h));
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.hero-band {
+  position: relative;
+  height: var(--sq);
+  align-self: center;
+  margin-block: 8px;
+  overflow: hidden;
+}
+
+/* the photograph, centred on the band, behind the type */
+.hero-square {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--sq);
+  height: var(--sq);
+  overflow: hidden;
+  z-index: 1;
+}
+.hero-square img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* the moving line — first copy inside the h1 is the real title */
+.mq-row {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.mq-row--type { z-index: 2; }
+.mq-row--clip {
+  z-index: 3;
+  clip-path: inset(0 calc(50% - var(--sq) / 2));
+}
+
+.mq-track {
+  display: flex;
+  width: max-content;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(150px, 15vw, 230px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  animation: mq-slide 42s linear infinite;
+  will-change: transform;
+}
+
+.mq-row--type .mq-track { color: var(--ink); }
+.mq-row--clip .mq-track { color: var(--bg); }
+
+.mq-cell {
+  display: inline-flex;
+  align-items: center;
+  padding-right: 0.22em;
+}
+
+/* The clipped copy sets its words in a pseudo-element: it paints the knockout
+   over the photograph without ever presenting as a second text node lying on
+   top of the headline (nothing may sit over an h1). */
+.mq-row--clip .mq-cell::before {
+  content: attr(data-text);
+}
+
+/* the round dot between copies, one third of the cap height */
+.mq-cell::after {
+  content: "";
+  display: inline-block;
+  width: 0.33em;
+  height: 0.33em;
+  margin-left: 0.22em;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+@keyframes mq-slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.hero-band:hover .mq-track,
+/* a keyboard user gets the same pause a mouse user gets on hover */
+.hero.is-paused .mq-track { animation-play-state: paused; }
+
+.hero-lower {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 150px var(--margin) 0;
+  text-align: center;
+}
+
+.hero-support {
+  max-width: 36ch;
+  font-size: var(--step-lead);
+  line-height: 1.4;
+}
+
+.hero-fact {
+  font-size: var(--step-body);
+  color: var(--muted);
+}
+
+.hero-bottom {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 40px var(--margin) 40px;
+  font-size: 16px;
+}
+.hero-bottom .where { color: var(--muted); text-decoration: none; }
+
+/* --------------------------------------------------------------------------
+   Sections — one pair of equal margins, 120–240px apart
+   -------------------------------------------------------------------------- */
+
+.section {
+  padding-inline: var(--margin);
+  margin-top: var(--section-gap);
+}
+
+.section-inner { max-width: 1440px; margin-inline: auto; }
+
+.grid12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+
+/* --- intro: Title, note, facts row --------------------------------------- */
+
+/* the section gap before it is the hero's own 40px: padding carries the rest */
+.intro {
+  margin-top: 0;
+  padding-top: clamp(96px, 10vw, 140px);
+}
+
+.intro-head {
+  grid-column: 1 / span 6;
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: clamp(44px, 5vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.intro-note {
+  grid-column: 10 / span 3;
+  align-self: end;
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 260px;
+}
+
+.facts {
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  margin-top: 120px;
+  flex-wrap: wrap;
+}
+
+.fact-value {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: var(--step-head);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.fact-label {
+  margin-top: 6px;
+  font-size: var(--step-small);
+  color: var(--muted);
+  max-width: 24ch;
+}
+
+.intro-photo {
+  grid-column: 8 / span 5;
+  margin: 0;                 /* no UA figure margins: one pair of page margins only */
+  margin-top: 56px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+.intro-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- work: Small index, large picture ------------------------------------ */
+
+.work {
+  margin-top: var(--section-gap);
+  padding-inline: 0;
+}
+
+.work-stage {
+  display: grid;
+  grid-template-columns: 38% 62%;
+  min-height: 100svh;
+}
+
+.work-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px var(--margin) 32px;
+  container-type: inline-size;   /* the statement is sized against this column */
+}
+
+.work-head {
+  /* "Código" is the longest word and runs 5.1× the font size; sized in cqw so
+     it always closes inside the 38% column instead of sliding under the photo */
+  font-size: clamp(52px, 19cqw, 118px);
+  line-height: 0.95;
+}
+
+.work-index { list-style: none; margin: 0; padding: 0; }
+
+.work-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 44px;
+  padding-block: 6px;
+  text-decoration: none;
+}
+
+.work-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-lead);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  overflow-wrap: anywhere;   /* one unbreakable token must never widen the page */
+}
+
+.work-tags {
+  font-size: var(--step-small);
+  color: var(--muted);          /* never faded below full strength */
+  text-align: right;
+}
+
+.work-right {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+}
+.work-right img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+
+/* --- list: Giant word, filled bar rows ----------------------------------- */
+
+.list-section { display: flex; justify-content: center; }
+
+.list-column {
+  width: min(600px, 100%);
+  container-type: inline-size;
+}
+
+.giant-word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  /* tuned per word so "Stack" fills the 600px column from edge to edge —
+     the sheet asks for ~46cqw for four letters, this word has five */
+  font-size: 20.4cqw;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  overflow: hidden;
+}
+
+.bars {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bar {
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+
+.bar > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 56px;
+  padding: 0 18px;
+  font-size: var(--step-body);
+  font-weight: 500;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+.bar > summary::-webkit-details-marker { display: none; }
+.bar > summary::after {
+  content: "+";
+  font-family: var(--font-text);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+}
+.bar[open] > summary::after { content: "\2013"; }
+.bar > summary:hover { background: var(--surface-2); }
+
+.bar-panel {
+  padding: 4px 18px 20px;
+  background: var(--surface-2);
+}
+
+/* a closed panel is not on the page at all: no hidden text is measured, read
+   or tabbed into; it appears the moment the bar opens */
+.bar:not([open]) > .bar-panel {
+  display: none;
+}
+
+.bar-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bar-panel li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: var(--step-body);
+}
+
+.bar-panel .what {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* --- about: Wide photo, colour tile, facts -------------------------------- */
+
+.about-head {
+  grid-column: 1 / span 6;
+  font-size: var(--step-head);
+}
+
+.about-lead {
+  grid-column: 1 / span 6;
+  margin-top: 24px;
+  font-size: var(--step-lead);
+  line-height: 1.4;
+}
+
+.about-tiles {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  margin-top: 72px;
+}
+
+.about-photo {
+  grid-column: 1 / span 8;
+  position: relative;
+  margin: 0;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+.about-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+.about-caption {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 320px;
+  max-width: 70%;
+  padding: 20px;
+  background: var(--ink);
+  color: var(--accent-ink);
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.about-tile {
+  grid-column: 9 / span 4;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.about-shape {
+  background: var(--surface);
+  aspect-ratio: 4 / 2.6;          /* 60% of the photograph's height */
+  display: grid;
+  place-items: center;
+  padding: 22px;
+}
+.about-shape svg { width: 100%; height: auto; }
+
+.about-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+}
+
+.about-facts dt { font-size: var(--step-small); color: var(--muted); }
+.about-facts dd { margin: 2px 0 0; font-size: var(--step-small); }
+
+/* --- contact: Sentence, portrait, two links ------------------------------- */
+
+.contact {
+  margin-top: 0;
+  padding-top: clamp(96px, 10vw, 140px);
+  padding-bottom: 0;
+}
+
+.contact-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+  align-items: start;
+}
+
+.contact-sentence {
+  grid-column: 1 / span 5;
+  font-size: clamp(24px, 2.4vw, 36px);
+  line-height: 1.1;
+  max-width: 34ch;
+}
+
+.contact-photo {
+  grid-column: 8 / span 2;
+  width: 100%;
+  max-width: 170px;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+.contact-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+.contact-links { grid-column: 10 / span 3; }
+
+.contact-links ul { list-style: none; margin: 0; padding: 0; }
+.contact-links li + li { margin-top: 10px; }
+.contact-links a { font-size: var(--step-lead); }
+
+.contact-note {
+  margin-top: 18px;
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+
+/* --------------------------------------------------------------------------
+   Footer — the name returns at full width, ground and ink inverted
+   -------------------------------------------------------------------------- */
+
+.footer {
+  margin-top: 120px;
+  background: var(--ink);
+  color: var(--accent-ink);
+  padding: clamp(40px, 5vw, 72px) var(--margin) 32px;
+  container-type: inline-size;   /* the mark is sized against this band, not the viewport */
+}
+
+.footer-mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  line-height: 0.82;
+  /* one word, one line, closing exactly on both margins: nothing is cut */
+  font-size: 9.4cqw;
+  color: var(--accent-ink);
+  overflow: hidden;
+}
+
+.footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 36px;
+  font-size: var(--step-body);
+  line-height: 1.5;
+}
+
+.footer-meta a { color: var(--accent-ink); }
+
+.credits { max-width: 68ch; }
+
+/* --------------------------------------------------------------------------
+   Motion — entrances, feedback, one moving picture
+   -------------------------------------------------------------------------- */
+
+/* Only hide when JS is running, so content never stays hidden if it fails. */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+/* failsafe: nothing stays hidden longer than 3s, JS or no JS */
+.js.reveal-off .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+.js .reveal.in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--d, 0ms);
+}
+
+/* the one moving picture: a slow drift on a photograph */
+.drift img {
+  transform: scale(1.04);
+  transition: transform 9s ease-out;
+}
+.drift.in img { transform: scale(1); }
+
+.button,
+.nav a,
+.work-row,
+.bar > summary,
+.contact-links a {
+  transition: color 150ms ease, background-color 150ms ease,
+              filter 160ms ease, transform 160ms ease;
+}
+
+.work-row:hover .work-name { color: #ffd0e0; }
+.contact-links a:hover { color: #ffd0e0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mq-track { animation: none; transform: translateX(-8%); }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .drift img { transform: none; transition: none; }
+  .button:active { transform: none; }
+  * { scroll-behavior: auto !important; }
+}
+
+/* --------------------------------------------------------------------------
+   Phone — its own composition, not a squeeze of the desktop
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  :root {
+    --sq: 46vw;
+    --nav-h: 60px;   /* 24px padding + the menu summary (16px + 6px each side) */
+  }
+
+  .nav {
+    grid-template-columns: auto auto;
+    padding-top: 24px;
+  }
+  .nav-mark { justify-self: start; }
+  .nav-left { display: none; }
+
+  .nav-menu { display: block; justify-self: end; }
+  .nav-menu > summary {
+    list-style: none;
+    cursor: pointer;
+    font-size: var(--step-body);
+    padding: 6px 0;
+  }
+  .nav-menu > summary::-webkit-details-marker { display: none; }
+  .nav-menu[open] .nav-menu-panel {
+    position: absolute;
+    right: var(--margin);
+    top: 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 20px;
+    background: var(--surface);
+    z-index: 10;
+  }
+  .nav-menu-panel { display: none; }
+  .nav-menu-panel a { text-decoration: none; }
+
+  .mq-track { font-size: 34vw; }
+
+  .hero-lower { padding-top: 64px; gap: 20px; }
+  .hero-support { font-size: var(--step-lead); max-width: 30ch; }
+  .hero-fact { font-size: 16px; }
+
+  .hero-bottom {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 18px;
+  }
+  .hero-bottom .button { width: 100%; min-height: 52px; }
+
+  .grid12 { display: block; }
+
+  .intro { padding-top: 84px; }
+  .intro-head { font-size: 11vw; }
+  .intro-note { margin-top: 20px; max-width: none; }
+
+  /* the three facts hold one row: three equal columns (the desktop row spreads
+     them over the 12 columns) — a wrap here would leave half a cell empty */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 64px;
+  }
+  .fact-value { font-size: var(--step-lead); }
+
+  .intro-photo { margin-top: 48px; aspect-ratio: 4 / 3; }
+
+  .work-stage { display: block; min-height: 0; }
+  .work-left { padding: 72px var(--margin) 0; gap: 40px; }
+  .work-head { font-size: 14vw; }
+  .work-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding-block: 10px;
+  }
+  .work-tags { text-align: left; }
+  .work-right { aspect-ratio: 4 / 5; margin-top: 32px; }
+
+  .list-column { width: 100%; }
+  .bar > summary { min-height: 54px; }
+
+  .about-lead { font-size: var(--step-lead); }
+  .about-tiles { display: block; margin-top: 48px; }
+  .about-photo { aspect-ratio: 4 / 3; }
+  .about-caption {
+    position: static;
+    width: auto;
+    max-width: none;
+    padding: 18px 0 0;
+    background: none;
+    color: var(--ink);
+  }
+  .about-tile { margin-top: 16px; }
+  .about-shape { aspect-ratio: 3 / 2; }
+  .about-facts { grid-template-columns: 1fr 1fr; }
+
+  .contact { padding-top: 88px; padding-bottom: 72px; }
+  .contact-row { display: block; margin-top: 32px; }
+  .contact-sentence { font-size: clamp(22px, 5.4vw, 24px); max-width: none; }
+
+  .contact-photo { width: 96px; margin-top: 32px; }
+
+  .contact-links { margin-top: 20px; }
+
+  .footer-meta { flex-direction: column; }
+}
+
+/* on a phone the sheet asks for the facts as a two-column grid with a 32px row
+   gap; above it they hold a single line of three, as on the desktop row */
+@media (max-width: 640px) {
+  .facts {
+    grid-template-columns: 1fr 1fr;
+  }
+}
