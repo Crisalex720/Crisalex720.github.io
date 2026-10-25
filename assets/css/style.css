@@ -5,28 +5,30 @@
    ========================================================================== */
 
 :root {
-  /* palette — one ground, one ink, one accent */
-  --bg: #1a2039;
-  color-scheme: dark;            /* dark scrollbar and form controls on a dark page */
-  --surface: #212846;
-  --surface-2: #272f52;      /* one step from --surface, for bar hover/panels */
-  --ink: #f9a3c0;
-  --muted: #c9a0b4;
+  --bg: #0f172a;
+  --bg-2: #171f38;
+  --surface: rgba(23, 31, 56, 0.86);
+  --surface-2: rgba(33, 44, 74, 0.96);
+  --panel: rgba(255, 255, 255, 0.02);
+  --line: rgba(255, 255, 255, 0.1);
+  --ink: #f8d2e4;
+  --ink-strong: #fff3f9;
+  --muted: #c8bfd0;
   --accent: #f9a3c0;
-  --accent-ink: #1a2039;
+  --accent-strong: #ffbfd9;
+  --accent-ink: #111827;
+  --shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
 
-  /* type steps — five is the ceiling */
-  --step-small: 15px;                           /* labels, captions, notes */
-  --step-body:  16px;                           /* running text */
-  --step-lead:  22px;                           /* leads, the closing statement's siblings */
-  --step-head:  40px;                           /* section headings, fact values */
+  --step-small: 15px;
+  --step-body: 16px;
+  --step-lead: 22px;
+  --step-head: 40px;
 
-  /* frame — one pair of equal outer margins, used everywhere */
   --margin: clamp(20px, 2.2vw, 32px);
-  --section-gap: clamp(120px, 14vw, 240px);
-  --radius: 0;              /* square corners, decided once */
-  --sq: 272px;              /* hero photograph, desktop */
-  --nav-h: 56px;            /* measured: 32px padding + one line of 16px/1.5 */
+  --section-gap: clamp(112px, 12vw, 220px);
+  --radius: 18px;
+  --sq: 272px;
+  --nav-h: 56px;
   --font-display: "Panchang", "Arial Black", system-ui, sans-serif;
   --font-text: "Switzer", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -41,15 +43,35 @@
 
 html { -webkit-text-size-adjust: 100%; }
 
+html { scroll-behavior: smooth; }
+
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at top left, rgba(249, 163, 192, 0.12), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(115, 156, 255, 0.12), transparent 28%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
   color: var(--ink);
   font-family: var(--font-text);
   font-size: var(--step-body);
   line-height: 1.5;
   font-weight: 400;
   overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.02) 0,
+    rgba(255,255,255,0.02) 1px,
+    transparent 1px,
+    transparent 120px
+  );
+  opacity: 0.5;
 }
 
 img { display: block; max-width: 100%; height: auto; }
@@ -162,20 +184,24 @@ p { margin: 0; text-wrap: pretty; }
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  padding: 12px 26px;
-  border: 0;
-  border-radius: var(--radius);
-  background: var(--accent);
+  padding: 12px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
   color: var(--accent-ink);
   font-family: var(--font-text);
   font-size: var(--step-body);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 160ms ease, filter 160ms ease;
+  box-shadow: 0 14px 28px rgba(249, 163, 192, 0.22);
+  transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
 }
-.button:hover { filter: brightness(1.08); }
+.button:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 18px 34px rgba(249, 163, 192, 0.28);
+}
 .button:active { transform: translateY(2px); }
 
 /* --------------------------------------------------------------------------
@@ -183,14 +209,18 @@ p { margin: 0; text-wrap: pretty; }
    -------------------------------------------------------------------------- */
 
 .nav {
-  position: relative;
-  z-index: 5;
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 16px;
-  padding: 32px var(--margin) 0;
+  padding: 18px var(--margin) 14px;
   font-size: var(--step-body);
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .nav-left { display: flex; gap: 22px; justify-self: start; }
@@ -198,9 +228,10 @@ p { margin: 0; text-wrap: pretty; }
 
 .nav a {
   text-decoration: none;
-  transition: color 150ms ease;
+  transition: color 150ms ease, opacity 150ms ease;
+  opacity: 0.9;
 }
-.nav a:hover { color: #ffd0e0; }
+.nav a:hover { color: var(--accent-strong); opacity: 1; }
 
 .nav-mark {
   justify-self: center;
@@ -222,14 +253,24 @@ p { margin: 0; text-wrap: pretty; }
   position: relative;
   /* the hero sits *under* the nav, so a full 100svh here would push its bottom
      row — the location line and the Contacto button — past the first screen.
-     One screen minus the nav keeps that row 40px above the fold. */
+     One screen minus the nav keeps that row 40px above the fold.
+
+     Two pieces of ground share what is left over: the one above the monument
+     takes twenty parts but stops at 160px, which centres the cap band 360px
+     from the top of the screen; the one under the fact takes the rest. On a
+     short screen the first one collapses to nothing, the sentence stays 150px
+     under the photograph and the bottom row keeps its place on the edge. */
   min-height: calc(100svh - var(--nav-h));
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
 }
+
+.hero-ground { flex: 1 1 0; min-height: 0; }
+.hero-ground--top { flex-grow: 20; max-height: 160px; }
 
 .hero-band {
   position: relative;
+  flex: none;
   height: var(--sq);
   align-self: center;
   margin-block: 8px;
@@ -322,6 +363,9 @@ p { margin: 0; text-wrap: pretty; }
 .hero-lower {
   position: relative;
   z-index: 4;
+  /* it absorbs the ground left over in row 3, so the fact never drifts away
+     from the sentence above it while the bottom row stays on the edge */
+  flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -362,7 +406,11 @@ p { margin: 0; text-wrap: pretty; }
   margin-top: var(--section-gap);
 }
 
-.section-inner { max-width: 1440px; margin-inline: auto; }
+.section-inner {
+  max-width: 1440px;
+  margin-inline: auto;
+  position: relative;
+}
 
 .grid12 {
   display: grid;
@@ -396,23 +444,30 @@ p { margin: 0; text-wrap: pretty; }
 }
 
 .facts {
-  display: flex;
-  justify-content: space-between;
-  gap: 32px;
-  margin-top: 120px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 96px;
+}
+
+.facts > div {
+  padding: 26px 22px 22px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
 }
 
 .fact-value {
   font-family: var(--font-text);
   font-weight: 400;
-  font-size: var(--step-head);
+  font-size: clamp(26px, 3vw, 40px);
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
 
 .fact-label {
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: var(--step-small);
   color: var(--muted);
   max-width: 24ch;
@@ -438,14 +493,20 @@ p { margin: 0; text-wrap: pretty; }
   display: grid;
   grid-template-columns: 38% 62%;
   min-height: 100svh;
+  gap: 24px;
+  padding: 0 var(--margin);
 }
 
 .work-left {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 40px var(--margin) 32px;
-  container-type: inline-size;   /* the statement is sized against this column */
+  padding: 28px 22px 22px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  container-type: inline-size;
 }
 
 .work-head {
@@ -486,6 +547,9 @@ p { margin: 0; text-wrap: pretty; }
   position: relative;
   overflow: hidden;
   background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
 }
 .work-right img {
   width: 100%;
@@ -519,12 +583,15 @@ p { margin: 0; text-wrap: pretty; }
   margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
 }
 
 .bar {
-  background: var(--surface);
-  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
 }
 
 .bar > summary {
@@ -532,10 +599,10 @@ p { margin: 0; text-wrap: pretty; }
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  min-height: 56px;
+  min-height: 58px;
   padding: 0 18px;
   font-size: var(--step-body);
-  font-weight: 500;
+  font-weight: 600;
   list-style: none;
   cursor: pointer;
   user-select: none;
@@ -549,11 +616,11 @@ p { margin: 0; text-wrap: pretty; }
   line-height: 1;
 }
 .bar[open] > summary::after { content: "\2013"; }
-.bar > summary:hover { background: var(--surface-2); }
+.bar > summary:hover { background: rgba(255, 255, 255, 0.03); }
 
 .bar-panel {
-  padding: 4px 18px 20px;
-  background: var(--surface-2);
+  padding: 4px 18px 18px;
+  background: rgba(255, 255, 255, 0.01);
 }
 
 /* a closed panel is not on the page at all: no hidden text is measured, read
@@ -612,20 +679,25 @@ p { margin: 0; text-wrap: pretty; }
   margin: 0;
   aspect-ratio: 16 / 10;
   overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
 }
 .about-photo img { width: 100%; height: 100%; object-fit: cover; }
 
 .about-caption {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 18px;
+  right: 18px;
   width: 320px;
   max-width: 70%;
   padding: 20px;
-  background: var(--ink);
+  background: rgba(248, 210, 228, 0.95);
   color: var(--accent-ink);
   font-size: 16px;
   line-height: 1.45;
+  border-radius: 16px;
+  box-shadow: 0 16px 28px rgba(15, 23, 42, 0.2);
 }
 
 .about-tile {
@@ -636,11 +708,14 @@ p { margin: 0; text-wrap: pretty; }
 }
 
 .about-shape {
-  background: var(--surface);
-  aspect-ratio: 4 / 2.6;          /* 60% of the photograph's height */
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  aspect-ratio: 4 / 2.6;
   display: grid;
   place-items: center;
   padding: 22px;
+  box-shadow: var(--shadow);
 }
 .about-shape svg { width: 100%; height: auto; }
 
@@ -682,6 +757,9 @@ p { margin: 0; text-wrap: pretty; }
   max-width: 170px;
   aspect-ratio: 1;
   overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: var(--shadow);
 }
 .contact-photo img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -703,10 +781,10 @@ p { margin: 0; text-wrap: pretty; }
 
 .footer {
   margin-top: 120px;
-  background: var(--ink);
+  background: linear-gradient(180deg, rgba(248, 210, 228, 0.96), rgba(247, 232, 238, 1));
   color: var(--accent-ink);
   padding: clamp(40px, 5vw, 72px) var(--margin) 32px;
-  container-type: inline-size;   /* the mark is sized against this band, not the viewport */
+  container-type: inline-size;
 }
 
 .footer-mark {
@@ -715,7 +793,6 @@ p { margin: 0; text-wrap: pretty; }
   text-transform: uppercase;
   letter-spacing: -0.05em;
   line-height: 0.82;
-  /* one word, one line, closing exactly on both margins: nothing is cut */
   font-size: 9.4cqw;
   color: var(--accent-ink);
   overflow: hidden;
@@ -832,10 +909,13 @@ p { margin: 0; text-wrap: pretty; }
   .hero-support { font-size: var(--step-lead); max-width: 30ch; }
   .hero-fact { font-size: 16px; }
 
+  /* on a phone the row stacks with the action last: the sheet puts the
+     button 20px above the bottom edge, the location line above it */
   .hero-bottom {
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-items: stretch;
     gap: 18px;
+    padding-bottom: 20px;
   }
   .hero-bottom .button { width: 100%; min-height: 52px; }
 
