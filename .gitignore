@@ -1,0 +1,22 @@
+# --- Jekyll build output (generated, never edited here)
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+
+# --- local previews and design-tooling artifacts (never published)
+__preview.html
+.taste-skill/
+.claude/
+
+# --- browser automation output (may contain credentials)
+.playwright/
+.playwright-cli/
+
+# --- dependencies
+node_modules/
+
+# --- operating system noise
+.DS_Store
+Thumbs.db
+Desktop.ini
