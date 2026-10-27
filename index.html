@@ -11,7 +11,7 @@ description: Portafolio de Crisalex720, desarrollador full-stack. PHP, Java y ba
 
   <div class="nav-right">
     <a class="hide-mobile reveal" style="--d:240ms" href="{{ '/en/' | relative_url }}" hreflang="en" lang="en">English</a>
-    <details class="nav-menu">
+    <details class="nav-menu" data-ui>
       <summary aria-label="Abrir menú de navegación">Menú</summary>
       <nav class="nav-menu-panel" aria-label="Secciones">
         <a href="#trabajo">Trabajo</a>
@@ -24,15 +24,22 @@ description: Portafolio de Crisalex720, desarrollador full-stack. PHP, Java y ba
   </div>
 </header>
 
+<nav class="rail" aria-label="Secciones" data-ui>
+  <a href="#trabajo" data-label="Trabajo" aria-label="Ir a Trabajo"><span class="rail-dot" aria-hidden="true"></span></a>
+  <a href="#stack" data-label="Stack" aria-label="Ir a Stack"><span class="rail-dot" aria-hidden="true"></span></a>
+  <a href="#sobre-mi" data-label="Sobre mí" aria-label="Ir a Sobre mí"><span class="rail-dot" aria-hidden="true"></span></a>
+  <a href="#contacto" data-label="Contacto" aria-label="Ir a Contacto"><span class="rail-dot" aria-hidden="true"></span></a>
+</nav>
+
 <div class="hero">
-  <div></div>
+  <div class="hero-ground hero-ground--top"></div>
 
   <div class="hero-band">
     <div class="hero-square">
       <img src="{{ '/assets/img/hero-square.jpg' | relative_url }}"
            width="1000" height="1000"
            fetchpriority="high"
-           alt="Agua quieta desapareciendo en niebla rosa">
+           alt="Una roca aislada en un mar azul calmo bajo un cielo pastel">
     </div>
 
     <div class="mq-row mq-row--type">
@@ -58,7 +65,7 @@ description: Portafolio de Crisalex720, desarrollador full-stack. PHP, Java y ba
     </div>
   </div>
 
-  <div>
+  <div class="hero-tail">
     <div class="hero-lower">
       <p class="hero-support reveal">Desarrollador full-stack. PHP, Java y bases de datos.</p>
       <p class="hero-fact reveal" style="--d:80ms">Español e inglés</p>
@@ -102,7 +109,7 @@ description: Portafolio de Crisalex720, desarrollador full-stack. PHP, Java y ba
         <figure class="intro-photo drift reveal">
           <img src="{{ '/assets/img/intro-jetty.jpg' | relative_url }}"
                width="1400" height="1050" loading="lazy"
-               alt="Un espigón de piedra que se adentra en agua quieta y niebla gris">
+               alt="Mar azul e islas a lo lejos vistas desde una orilla rocosa con troncos varados">
         </figure>
       </div>
     </div>
@@ -219,7 +226,7 @@ description: Portafolio de Crisalex720, desarrollador full-stack. PHP, Java y ba
         <figure class="about-photo drift reveal">
           <img src="{{ '/assets/img/about-forest.jpg' | relative_url }}"
                width="1600" height="1000" loading="lazy"
-               alt="Bosque de pinos disolviéndose en niebla bajo un cielo rosa pálido">
+               alt="Vista aérea de un cabazo boscoso junto a un mar azul profundo">
           <figcaption class="about-caption">
             Cada commit, el CSS y el contenido están ahí. Es el primero de los proyectos que voy
             publicando.
@@ -231,8 +238,8 @@ description: Portafolio de Crisalex720, desarrollador full-stack. PHP, Java y ba
             <!-- one filled shape and one dot: the page's own claim, drawn as a plan
                  (de datos a interfaz), never as three empty bars -->
             <svg viewBox="0 0 240 150" role="img" aria-label="Silueta escalonada de datos a interfaz, con un punto sobre el nivel superior">
-              <path d="M14 136 V102 H88 V68 H162 V34 H226 V136 Z" fill="#2f3760"></path>
-              <circle cx="194" cy="51" r="11" fill="#f9a3c0"></circle>
+              <path d="M14 136 V102 H88 V68 H162 V34 H226 V136 Z" fill="#1d3a72"></path>
+              <circle cx="194" cy="51" r="11" fill="#6ea8ff"></circle>
             </svg>
           </div>
 
@@ -293,9 +300,10 @@ description: Portafolio de Crisalex720, desarrollador full-stack. PHP, Java y ba
 
   <div class="footer-meta reveal" style="--d:90ms">
     <p class="credits">
-      Fotografías: «Still misty water» de Taylor Leopold; «Stone jetty stretching into still water»
-      de Aleksi Tappura; «Pine forest dissolving into fog» de Jay Mantri; «Gulls perched on a
-      concrete wall» de Jill Heyer — Unsplash, servidas por picsum.photos. Captura del repositorio
+      Fotografías: «Lone rock in a calm blue sea beneath a pastel sky» de Stephen Radford; «Blue sea
+      and distant islands seen over a rocky driftwood shore» de Paul Jarvis; «Aerial view of a
+      forested headland beside deep blue sea» de Mickey O'neil; «Gulls perched on a concrete wall»
+      de Jill Heyer — Unsplash, servidas por picsum.photos. Captura del repositorio
       de github.com/Crisalex720/Crisalex720.github.io.
     </p>
     <p>

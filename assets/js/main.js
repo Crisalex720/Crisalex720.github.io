@@ -75,4 +75,72 @@
       if (menu) menu.open = false;
     });
   });
+
+  /* ---- the reading line at the top of the window ---------------------- */
+
+  var progress = document.querySelector(".progress");
+  var queued = false;
+
+  function drawProgress() {
+    queued = false;
+    if (!progress) return;
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    progress.style.transform = "scaleX(" + ratio.toFixed(4) + ")";
+  }
+
+  window.addEventListener("scroll", function () {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(drawProgress);
+  }, { passive: true });
+  drawProgress();
+
+  /* ---- the rail: it arrives after the monument and leaves at the footer,
+         and it always knows which chapter you are reading ---------------- */
+
+  var rail = document.querySelector(".rail");
+  var heroEl = document.querySelector(".hero");
+  var footerEl = document.querySelector(".footer");
+
+  if (rail && "IntersectionObserver" in window) {
+    var covered = { hero: true, footer: false };
+
+    var syncRail = function () {
+      rail.classList.toggle("is-shown", !covered.hero && !covered.footer);
+    };
+
+    var presence = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.target === heroEl) covered.hero = entry.isIntersecting;
+        if (entry.target === footerEl) covered.footer = entry.isIntersecting;
+      });
+      syncRail();
+    }, { threshold: 0 });
+
+    if (heroEl) presence.observe(heroEl);
+    if (footerEl) presence.observe(footerEl);
+    syncRail();
+
+    var links = {};
+    var active = null;
+    document.querySelectorAll(".rail a").forEach(function (a) {
+      links[a.getAttribute("href").slice(1)] = a;
+    });
+
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = entry.isIntersecting ? links[entry.target.id] : null;
+        if (!link || link === active) return;
+        if (active) active.classList.remove("is-active");
+        link.classList.add("is-active");
+        active = link;
+      });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+
+    Object.keys(links).forEach(function (id) {
+      var section = document.getElementById(id);
+      if (section) spy.observe(section);
+    });
+  }
 })();

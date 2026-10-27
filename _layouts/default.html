@@ -9,7 +9,8 @@
     <meta property="og:title" content="{{ page.title }}">
     <meta property="og:description" content="{{ page.description }}">
     <meta property="og:url" content="{{ page.url | replace: 'index.html', '' | absolute_url }}">
-    <meta name="theme-color" content="#1a2039">
+    <meta name="theme-color" content="#0b1631">
+    <link rel="icon" href="{{ '/assets/img/favicon.svg' | relative_url }}" type="image/svg+xml">
 
     <link rel="canonical" href="{{ page.url | replace: 'index.html', '' | absolute_url }}">
     <link rel="alternate" hreflang="es" href="{{ '/' | absolute_url }}">
@@ -32,6 +33,7 @@
     </script>
   </head>
   <body>
+    <div class="progress" aria-hidden="true"></div>
     {% if page.lang == 'en' %}<a class="skip-link" href="#content">Skip to content</a>{% else %}<a class="skip-link" href="#contenido">Saltar al contenido</a>{% endif %}
     {{ content }}
     <script src="{{ '/assets/js/main.js' | relative_url }}" defer></script>

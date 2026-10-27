@@ -5,19 +5,23 @@
    ========================================================================== */
 
 :root {
-  --bg: #0f172a;
-  --bg-2: #171f38;
-  --surface: rgba(23, 31, 56, 0.86);
-  --surface-2: rgba(33, 44, 74, 0.96);
+  /* palette — one ground, one ink, one accent, every one of them blue:
+     the ground is a deep navy, the accent a bright azure that carries the
+     action and nothing else */
+  --bg: #0b1631;
+  --bg-2: #0e1d42;
+  --surface: rgba(14, 27, 62, 0.88);
+  --surface-2: rgba(26, 44, 92, 0.96);
   --panel: rgba(255, 255, 255, 0.02);
   --line: rgba(255, 255, 255, 0.1);
-  --ink: #f8d2e4;
-  --ink-strong: #fff3f9;
-  --muted: #c8bfd0;
-  --accent: #f9a3c0;
-  --accent-strong: #ffbfd9;
-  --accent-ink: #111827;
-  --shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
+  --ink: #e7efff;
+  --ink-strong: #ffffff;
+  --muted: #a8bce6;
+  --accent: #6ea8ff;
+  --accent-strong: #a8ccff;
+  --accent-ink: #071026;
+  --accent-wash: rgba(110, 168, 255, 0.12);
+  --shadow: 0 18px 40px rgba(4, 10, 28, 0.42);
 
   --step-small: 15px;
   --step-body: 16px;
@@ -25,7 +29,11 @@
   --step-head: 40px;
 
   --margin: clamp(20px, 2.2vw, 32px);
-  --section-gap: clamp(112px, 12vw, 220px);
+  /* room for the rail at the right edge: the box is 27px wide and sits 6px
+     from the edge, so the content column gives back only what the box needs
+     beyond the page's own margin — never enough to unbalance the frame */
+  --lane: clamp(3px, calc(33px - 2.2vw), 15px);
+  --section-gap: clamp(96px, 8vw, 160px);
   --radius: 18px;
   --sq: 272px;
   --nav-h: 56px;
@@ -49,10 +57,7 @@ html {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at top left, rgba(249, 163, 192, 0.12), transparent 30%),
-    radial-gradient(circle at bottom right, rgba(115, 156, 255, 0.12), transparent 28%),
-    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font-text);
   font-size: var(--step-body);
@@ -92,7 +97,7 @@ a {
 /* no double-tap zoom delay on the links and the menu summary */
 a, button, summary, details {
   touch-action: manipulation;
-  -webkit-tap-highlight-color: rgba(249, 163, 192, 0.24);
+  -webkit-tap-highlight-color: rgba(110, 168, 255, 0.26);
 }
 
 ::selection {
@@ -187,9 +192,9 @@ p { margin: 0; text-wrap: pretty; }
   justify-content: center;
   min-height: 48px;
   padding: 12px 28px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 0;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+  background: var(--accent);
   color: var(--accent-ink);
   font-family: var(--font-text);
   font-size: var(--step-body);
@@ -197,13 +202,9 @@ p { margin: 0; text-wrap: pretty; }
   line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 14px 28px rgba(249, 163, 192, 0.22);
-  transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
+  transition: transform 160ms ease, background-color 160ms ease;
 }
-.button:hover {
-  filter: brightness(1.06);
-  box-shadow: 0 18px 34px rgba(249, 163, 192, 0.28);
-}
+.button:hover { background: var(--accent-strong); }
 .button:active { transform: translateY(2px); }
 
 /* --------------------------------------------------------------------------
@@ -240,24 +241,16 @@ p { margin: 0; text-wrap: pretty; }
   text-decoration: none;
 }
 
-.nav-menu {
-  position: fixed;
-  top: 50%;
-  right: var(--margin);
-  z-index: 40;
-  display: block;
-  transform: translateY(-50%);
-}
-
+/* the phone's menu: a pill in the top bar that opens a small panel below it */
 .nav-menu > summary {
   display: grid;
   place-items: center;
   min-width: 56px;
-  min-height: 56px;
-  padding: 8px 12px;
+  min-height: 38px;
+  padding: 8px 14px;
   border: 1px solid var(--line);
-  border-radius: 16px;
-  background: rgba(23, 31, 56, 0.94);
+  border-radius: 999px;
+  background: var(--surface);
   box-shadow: var(--shadow);
   color: var(--ink-strong);
   font-size: var(--step-small);
@@ -265,10 +258,11 @@ p { margin: 0; text-wrap: pretty; }
   list-style: none;
   cursor: pointer;
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: border-color 180ms ease, background-color 180ms ease;
 }
-
 .nav-menu > summary::-webkit-details-marker { display: none; }
-.nav-menu > summary:hover { border-color: rgba(249, 163, 192, 0.5); }
+.nav-menu > summary:hover { border-color: rgba(110, 168, 255, 0.55); }
 
 .nav-menu-panel {
   position: fixed;
@@ -281,20 +275,150 @@ p { margin: 0; text-wrap: pretty; }
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: rgba(23, 31, 56, 0.96);
+  background: var(--surface-2);
   box-shadow: var(--shadow);
   transform: translateY(-50%);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
-
-.nav-menu[open] .nav-menu-panel { display: flex; }
+.nav-menu[open] .nav-menu-panel { display: flex; animation: menu-in 220ms cubic-bezier(0.22, 1, 0.36, 1); }
 .nav-menu-panel a {
   padding: 10px 12px;
   border-radius: 10px;
   text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease;
 }
 .nav-menu-panel a:hover,
-.nav-menu-panel a:focus-visible { background: rgba(255, 255, 255, 0.07); }
+.nav-menu-panel a:focus-visible { background: rgba(110, 168, 255, 0.16); }
+
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(-50%) translateX(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0) scale(1); }
+}
+@keyframes menu-in-flat {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* on a desktop the rail carries the navigation instead */
+@media (min-width: 861px) {
+  .nav-menu { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Rail — the four chapters in a small box that rides the right edge
+   -------------------------------------------------------------------------- */
+
+.rail {
+  position: fixed;
+  top: 50%;
+  right: 6px;
+  z-index: 40;
+  transform: translateY(-50%) translateX(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  /* it appears once the monument is behind you and leaves before the footer,
+     so it never sits on top of the name */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 420ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+              visibility 420ms;
+}
+.rail.is-shown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+.rail a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 200ms ease, background-color 200ms ease;
+}
+
+/* the section's name waits in the margin and slides out on hover/focus, so
+   the box itself never grows over the content */
+.rail a::after {
+  content: attr(data-label);
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2);
+  box-shadow: var(--shadow);
+  font-family: var(--font-text);
+  font-size: var(--step-small);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rail a:hover::after,
+.rail a:focus-visible::after { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+.rail a:hover,
+.rail a:focus-visible { color: var(--ink); background: rgba(255, 255, 255, 0.05); }
+
+.rail-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 260ms ease, opacity 260ms ease, box-shadow 260ms ease;
+}
+
+.rail a.is-active { color: var(--ink); background: var(--accent-wash); }
+.rail a.is-active .rail-dot {
+  background: var(--accent);
+  opacity: 1;
+  transform: scale(1.45);
+  box-shadow: 0 0 0 4px rgba(110, 168, 255, 0.16);
+}
+
+/* on a phone the rail has no room: the menu goes back into the top bar */
+@media (max-width: 860px) {
+  .rail { display: none; }
+
+  .nav-menu {
+    position: static;
+    transform: none;
+  }
+  .nav-menu-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: var(--margin);
+    transform: none;
+  }
+  .nav-menu[open] .nav-menu-panel { animation: menu-in-flat 200ms cubic-bezier(0.22, 1, 0.36, 1); }
+}
 
 /* --------------------------------------------------------------------------
    Hero — Square over a moving line
@@ -308,9 +432,9 @@ p { margin: 0; text-wrap: pretty; }
 
      Two pieces of ground share what is left over: the one above the monument
      takes twenty parts but stops at 160px, which centres the cap band 360px
-     from the top of the screen; the one under the fact takes the rest. On a
-     short screen the first one collapses to nothing, the sentence stays 150px
-     under the photograph and the bottom row keeps its place on the edge. */
+     from the top of the screen; the tail takes the rest, so the sentence stays
+     150px under the photograph and the bottom row keeps its place on the edge.
+     On a short screen the ground collapses to nothing and nothing is lost. */
   min-height: calc(100svh - var(--nav-h));
   display: flex;
   flex-direction: column;
@@ -319,11 +443,22 @@ p { margin: 0; text-wrap: pretty; }
 .hero-ground { flex: 1 1 0; min-height: 0; }
 .hero-ground--top { flex-grow: 20; max-height: 160px; }
 
+/* the tail holds the sentence, the fact and the bottom row, and stretches to
+   the bottom of the hero so that row never floats mid-screen */
+.hero-tail {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .hero-band {
   position: relative;
   flex: none;
+  /* stretch, never centre: the band's children are all absolutely placed, so a
+     shrink-to-fit width would collapse it to 0 and clip the name and the photo */
+  align-self: stretch;
   height: var(--sq);
-  align-self: center;
   margin-block: 8px;
   overflow: hidden;
 }
@@ -338,11 +473,24 @@ p { margin: 0; text-wrap: pretty; }
   height: var(--sq);
   overflow: hidden;
   z-index: 1;
+  isolation: isolate;
 }
 .hero-square img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+/* The photograph joins the palette: only its colour is pulled towards the
+   accent's blue, its light and dark left exactly as taken — so the knockout
+   letters that pass over it keep every bit of their contrast. */
+.hero-square::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #6ea8ff;
+  mix-blend-mode: color;
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 /* the moving line — first copy inside the h1 is the real title */
@@ -413,8 +561,8 @@ p { margin: 0; text-wrap: pretty; }
 .hero-lower {
   position: relative;
   z-index: 4;
-  /* it absorbs the ground left over in row 3, so the fact never drifts away
-     from the sentence above it while the bottom row stays on the edge */
+  /* it absorbs the ground left over inside the tail, so the fact never drifts
+     away from the sentence above it while the bottom row stays on the edge */
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
@@ -456,10 +604,42 @@ p { margin: 0; text-wrap: pretty; }
   margin-top: var(--section-gap);
 }
 
-.section[id] {
-  padding-top: clamp(56px, 8vw, 112px);
-  border-top: 1px solid var(--line);
+/* Every chapter opens with the same mark, so a visitor always knows a new
+   part has begun: a rule that starts in the accent and dies out. */
+section[id] {
+  position: relative;
+  padding-top: clamp(48px, 5vw, 76px);
   scroll-margin-top: 88px;
+}
+
+section[id]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--margin);
+  right: var(--margin);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--accent) 0,
+    rgba(110, 168, 255, 0.35) 22%,
+    var(--line) 55%,
+    transparent 100%
+  );
+}
+
+/* The four chapters each sit on their own ground — one flat wash of the accent
+   per chapter — so the eye tells where one part ends and the next begins
+   before reading a single word. */
+#stack {
+  background: rgba(110, 168, 255, 0.065);
+}
+#sobre-mi,
+#about {
+  background: rgba(110, 168, 255, 0.04);
+  /* the last line of the facts keeps its distance from the next chapter's
+     heading, so nothing reads as a label sitting on top of it */
+  padding-bottom: 32px;
 }
 
 .section-inner {
@@ -467,7 +647,6 @@ p { margin: 0; text-wrap: pretty; }
   margin-inline: auto;
   position: relative;
 }
-
 .grid12 {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -508,10 +687,9 @@ p { margin: 0; text-wrap: pretty; }
 
 .facts > div {
   padding: 26px 22px 22px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--line);
+  /* a surface is a tone step from the ground, never an outline */
+  background: rgba(255, 255, 255, 0.045);
   border-radius: 18px;
-  box-shadow: var(--shadow);
 }
 
 .fact-value {
@@ -542,9 +720,9 @@ p { margin: 0; text-wrap: pretty; }
 
 .work {
   margin-top: var(--section-gap);
-  padding: clamp(44px, 6vw, 88px) 0;
-  border-block: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.015);
+  padding: clamp(32px, 4vw, 64px) 0;
+  /* one flat wash: the chapter's own ground, a step above the page */
+  background: rgba(110, 168, 255, 0.05);
 }
 
 .work-stage {
@@ -560,10 +738,8 @@ p { margin: 0; text-wrap: pretty; }
   flex-direction: column;
   justify-content: space-between;
   padding: 28px 22px 22px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.045);
   border-radius: 24px;
-  box-shadow: var(--shadow);
   container-type: inline-size;
 }
 
@@ -580,7 +756,11 @@ p { margin: 0; text-wrap: pretty; }
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 20px;
+  /* the repository's name is one unbreakable token: when the two of them do
+     not share a line, the tags drop below instead of the name being cut in
+     the middle of a word */
+  flex-wrap: wrap;
+  gap: 4px 20px;
   min-height: 44px;
   padding-block: 6px;
   text-decoration: none;
@@ -589,7 +769,9 @@ p { margin: 0; text-wrap: pretty; }
 .work-name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--step-lead);
+  /* sized so the whole name closes on one line, from a 360px phone to a
+     desktop column */
+  font-size: clamp(17px, 4.9vw, var(--step-lead));
   letter-spacing: -0.02em;
   text-decoration: none;
   overflow-wrap: anywhere;   /* one unbreakable token must never widen the page */
@@ -605,9 +787,7 @@ p { margin: 0; text-wrap: pretty; }
   position: relative;
   overflow: hidden;
   background: var(--surface);
-  border: 1px solid var(--line);
   border-radius: 24px;
-  box-shadow: var(--shadow);
 }
 .work-right img {
   width: 100%;
@@ -621,8 +801,7 @@ p { margin: 0; text-wrap: pretty; }
 .list-section {
   display: flex;
   justify-content: center;
-  padding-block: clamp(56px, 8vw, 112px);
-  border-bottom: 1px solid var(--line);
+  padding-block: clamp(40px, 4vw, 64px);
 }
 
 .list-column {
@@ -650,11 +829,9 @@ p { margin: 0; text-wrap: pretty; }
 }
 
 .bar {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.045);
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: var(--shadow);
 }
 
 .bar > summary {
@@ -742,9 +919,7 @@ p { margin: 0; text-wrap: pretty; }
   margin: 0;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  border: 1px solid var(--line);
   border-radius: 24px;
-  box-shadow: var(--shadow);
 }
 .about-photo img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -755,12 +930,11 @@ p { margin: 0; text-wrap: pretty; }
   width: 320px;
   max-width: 70%;
   padding: 20px;
-  background: rgba(248, 210, 228, 0.95);
+  background: rgba(219, 233, 255, 0.96);
   color: var(--accent-ink);
   font-size: 16px;
   line-height: 1.45;
   border-radius: 16px;
-  box-shadow: 0 16px 28px rgba(15, 23, 42, 0.2);
 }
 
 .about-tile {
@@ -771,14 +945,12 @@ p { margin: 0; text-wrap: pretty; }
 }
 
 .about-shape {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.045);
   border-radius: 20px;
   aspect-ratio: 4 / 2.6;
   display: grid;
   place-items: center;
   padding: 22px;
-  box-shadow: var(--shadow);
 }
 .about-shape svg { width: 100%; height: auto; }
 
@@ -796,9 +968,8 @@ p { margin: 0; text-wrap: pretty; }
 .contact {
   margin-top: 0;
   padding-top: clamp(96px, 10vw, 140px);
-  padding-bottom: clamp(56px, 8vw, 112px);
-  border-top: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent);
+  padding-bottom: clamp(40px, 5vw, 72px);
+  background: rgba(110, 168, 255, 0.06);
 }
 
 .contact-row {
@@ -822,9 +993,7 @@ p { margin: 0; text-wrap: pretty; }
   max-width: 170px;
   aspect-ratio: 1;
   overflow: hidden;
-  border: 1px solid var(--line);
   border-radius: 50%;
-  box-shadow: var(--shadow);
 }
 .contact-photo img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -845,8 +1014,9 @@ p { margin: 0; text-wrap: pretty; }
    -------------------------------------------------------------------------- */
 
 .footer {
-  margin-top: 120px;
-  background: linear-gradient(180deg, rgba(248, 210, 228, 0.96), rgba(247, 232, 238, 1));
+  margin-top: 72px;
+  /* ground and ink inverted: one flat light blue, no wash of its own */
+  background: #dbe7ff;
   color: var(--accent-ink);
   padding: clamp(40px, 5vw, 72px) var(--margin) 32px;
   container-type: inline-size;
@@ -877,6 +1047,14 @@ p { margin: 0; text-wrap: pretty; }
 
 .credits { max-width: 68ch; }
 
+@media (min-width: 861px) {
+  /* room for the rail at the right edge, declared after every rule it has to
+     win over: the box never covers a word, a link or a photograph */
+  .section-inner { padding-right: var(--lane); }
+  .work-stage { padding-right: calc(var(--margin) + var(--lane)); }
+  .footer { padding-right: calc(var(--margin) + var(--lane)); }
+}
+
 /* --------------------------------------------------------------------------
    Motion — entrances, feedback, one moving picture
    -------------------------------------------------------------------------- */
@@ -884,7 +1062,7 @@ p { margin: 0; text-wrap: pretty; }
 /* Only hide when JS is running, so content never stays hidden if it fails. */
 .js .reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(26px);
 }
 
 /* failsafe: nothing stays hidden longer than 3s, JS or no JS */
@@ -897,17 +1075,61 @@ p { margin: 0; text-wrap: pretty; }
 .js .reveal.in {
   opacity: 1;
   transform: none;
-  transition: opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
-              transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--d, 0ms);
 }
 
-/* the one moving picture: a slow drift on a photograph */
+/* the one moving picture: a slow drift on a photograph, which quickens under
+   the cursor without ever becoming a zoom the visitor has to fight */
 .drift img {
   transform: scale(1.04);
   transition: transform 9s ease-out;
 }
 .drift.in img { transform: scale(1); }
+.drift.in:hover img {
+  transform: scale(1.05);
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* the reading line at the very top: how far into the page the visitor is */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 60;
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* a bar opens in place instead of snapping open */
+.bar[open] > .bar-panel { animation: unfold 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+@keyframes unfold {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* cards answer the cursor: a lift and one tone step brighter — depth comes
+   from the surface, never from a shadow */
+.facts > div,
+.bar,
+.work-left,
+.about-shape {
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 320ms ease;
+}
+.facts > div:hover,
+.bar:hover,
+.work-left:hover,
+.about-shape:hover {
+  transform: translateY(-4px);
+  background-color: rgba(255, 255, 255, 0.075);
+}
 
 .button,
 .nav a,
@@ -918,13 +1140,21 @@ p { margin: 0; text-wrap: pretty; }
               filter 160ms ease, transform 160ms ease;
 }
 
-.work-row:hover .work-name { color: #ffd0e0; }
-.contact-links a:hover { color: #ffd0e0; }
+.work-row:hover .work-name { color: var(--accent-strong); }
+.contact-links a:hover { color: var(--accent-strong); }
 
 @media (prefers-reduced-motion: reduce) {
   .mq-track { animation: none; transform: translateX(-8%); }
   .js .reveal { opacity: 1; transform: none; transition: none; }
-  .drift img { transform: none; transition: none; }
+  .drift img,
+  .drift.in:hover img { transform: none; transition: none; }
+  .facts > div:hover,
+  .bar:hover,
+  .work-left:hover,
+  .about-shape:hover { transform: none; }
+  .bar[open] > .bar-panel,
+  .nav-menu[open] .nav-menu-panel { animation: none; }
+  .progress { display: none; }
   .button:active { transform: none; }
   * { scroll-behavior: auto !important; }
 }
